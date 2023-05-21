@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -16,17 +17,20 @@ func main() {
 	}
 	defer file.Close()
 	sum := 0
+	ribbonSum := 0
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
 		dimensions := parseLine(line)
 		sum += calculateTotal(dimensions)
+		ribbonSum += calculateRibbon(dimensions)
 	}
 
 	if err := scanner.Err(); err != nil {
 		fmt.Println("Error scanning file:", err)
 	}
 	fmt.Println(sum)
+	fmt.Println(ribbonSum)
 }
 
 func parseLine(line string) []int {
@@ -71,4 +75,9 @@ func findSmallest(s []int) int {
 		}
 	}
 	return smallest / 2
+}
+
+func calculateRibbon(d []int) int {
+	sort.Ints(d)
+	return 2*(d[0]+d[1]) + (d[0] * d[1] * d[2])
 }
