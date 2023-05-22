@@ -10,6 +10,48 @@ import (
 
 func main() {
 	fmt.Println(partOne())
+	fmt.Println(partTwo())
+	fmt.Println(hasPairRepeating("ueihvxviirnooomi"))
+}
+
+func partTwo() int {
+	count := 0
+	lines := readInput()
+	for _, line := range lines {
+		if hasRepeatingWithOneBetween(line) && hasPairRepeating(line) {
+			count++
+		}
+	}
+	return count
+}
+
+func hasRepeatingWithOneBetween(s string) bool {
+	for i := 0; i < len(s)-2; i++ {
+		if s[i] == s[i+2] {
+			return true
+		}
+	}
+	return false
+}
+
+// I should have used regexp
+// but regexp depresses me
+// instead I preferred to get lost in substrings
+func hasPairRepeating(s string) bool {
+	pairs := make(map[string]bool)
+	for i := 0; i < len(s)-1; i++ {
+		pair := s[i : i+2]
+		//check for overlap
+		//skip if it overlaps
+		if i+2 < len(s) && pair == s[i+1:i+3] {
+			continue
+		}
+		if pairs[pair] {
+			return true
+		}
+		pairs[pair] = true
+	}
+	return false
 }
 
 func partOne() int {
