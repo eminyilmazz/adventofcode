@@ -11,6 +11,7 @@ type House struct {
 
 func main() {
 	fmt.Println(travel())
+	fmt.Println(travelWithRoboSanta())
 }
 
 func readInput() string {
@@ -19,6 +20,22 @@ func readInput() string {
 		fmt.Print(err)
 	}
 	return string(content)
+}
+
+func travelWithRoboSanta() int {
+	been := make(map[House]bool)
+	directions := readInput()
+	santa := House{x: 0, y: 0}
+	roboSanta := House{x: 0, y: 0}
+	been[santa] = true
+	for i, d := range directions {
+		if i%2 == 0 {
+			visit(&been, d, &roboSanta)
+			continue
+		}
+		visit(&been, d, &santa)
+	}
+	return len(been)
 }
 
 func travel() int {
