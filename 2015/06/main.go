@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -11,6 +12,7 @@ import (
 
 func main() {
 	fmt.Println(partOne())
+	fmt.Println(partTwo())
 }
 
 func partOne() int {
@@ -32,6 +34,25 @@ func partOne() int {
 	return countLights(grid)
 }
 
+func partTwo() int {
+	//var grid [1000][1000]bool
+	grid := make([][]int, 1000)
+	//idk why I have to do this but I guess that's how you do 2D slice.
+	for i := range grid {
+		grid[i] = make([]int, 1000)
+	}
+	instructions := readInput()
+	for _, instruction := range instructions {
+		op, start, end := parseInput(instruction)
+		for i := start[0]; i <= end[0]; i++ {
+			for j := start[1]; j <= end[1]; j++ {
+				changeStateTwo(&grid, op, i, j)
+			}
+		}
+	}
+	return countBrightness(grid)
+}
+
 func changeState(grid *[][]bool, op string, x int, y int) {
 	if op == "turn off" {
 		(*grid)[x][y] = false
@@ -39,6 +60,16 @@ func changeState(grid *[][]bool, op string, x int, y int) {
 		(*grid)[x][y] = true
 	} else if op == "toggle" {
 		(*grid)[x][y] = !(*grid)[x][y]
+	}
+}
+
+func changeStateTwo(grid *[][]int, op string, x int, y int) {
+	if op == "turn off" {
+		(*grid)[x][y] = int(math.Max(float64((*grid)[x][y]-1), 0))
+	} else if op == "turn on" {
+		(*grid)[x][y] = (*grid)[x][y] + 1
+	} else if op == "toggle" {
+		(*grid)[x][y] = (*grid)[x][y] + 2
 	}
 }
 
@@ -88,6 +119,16 @@ func countLights(grid [][]bool) int {
 			if isOn {
 				count++
 			}
+		}
+	}
+	return count
+}
+
+func countBrightness(grid [][]int) int {
+	count := 0
+	for _, row := range grid {
+		for _, brightness := range row {
+			count += brightness
 		}
 	}
 	return count
