@@ -8,17 +8,22 @@ import (
 )
 
 func main() {
-	fmt.Println(partOne())
+	fmt.Println(md5LeadingZeros(5)) //part one
+	fmt.Println(md5LeadingZeros(6)) //part two
 }
 
-func partOne() int {
-	number := 1
+func md5LeadingZeros(count int) int {
+	pad := ""
+	for i := 0; i < count; i++ {
+		pad += "0"
+	}
 	input := "iwrupvqb"
+	number := 1
 	for {
 		secret := input + strconv.Itoa(number)
 		hashBytes := md5.Sum([]byte(secret))
 		hashStr := hex.EncodeToString(hashBytes[:])
-		if hashStr[:5] == "00000" {
+		if hashStr[:count] == pad {
 			return number
 		}
 		number++
