@@ -62,7 +62,8 @@ func (g *Graph) FindPaths() (Path, Path, error) {
 		if distance < shortestPath.Distance {
 			shortestPath.Distance = distance
 			shortestPath.Nodes = nodes
-		} else if distance > longestPath.Distance {
+		}
+		if distance > longestPath.Distance {
 			longestPath.Distance = distance
 			longestPath.Nodes = nodes
 		}
