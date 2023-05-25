@@ -46,12 +46,13 @@ type Path struct {
 	Nodes    []*Node
 }
 
-func (g *Graph) FindPaths() (Path, error) {
+func (g *Graph) FindPaths() (Path, Path, error) {
 	// Generate all permutations of nodes
 	paths := g.GeneratePermutations()
 
 	// Find the shortest path among the permutations
 	shortestPath := Path{Distance: math.MaxInt32}
+	longestPath := Path{Distance: math.MinInt32}
 	for _, nodes := range paths {
 		distance, err := calculatePathDistance(nodes)
 		if err != nil {
@@ -61,14 +62,17 @@ func (g *Graph) FindPaths() (Path, error) {
 		if distance < shortestPath.Distance {
 			shortestPath.Distance = distance
 			shortestPath.Nodes = nodes
+		} else if distance > longestPath.Distance {
+			longestPath.Distance = distance
+			longestPath.Nodes = nodes
 		}
 	}
 
-	if shortestPath.Distance == math.MaxInt32 {
-		return Path{}, errors.New("no path found")
+	if shortestPath.Distance == math.MaxInt32 || longestPath.Distance == math.MinInt32 {
+		return Path{}, Path{}, errors.New("no path found")
 	}
 
-	return shortestPath, nil
+	return shortestPath, longestPath, nil
 }
 
 func calculatePathDistance(nodes []*Node) (int, error) {
@@ -137,12 +141,14 @@ func partOne() {
 	g := createGraph()
 	g.PrintGraph()
 	fmt.Println()
-	shortest, err := g.FindPaths()
+	shortest, longest, err := g.FindPaths()
 	if err != nil {
 		fmt.Println("Error:", err)
 	} else {
 		fmt.Println("Shortest Path:", getPathNames(shortest.Nodes))
 		fmt.Println("Distance:", shortest.Distance)
+		fmt.Println("Longest Path:", getPathNames(longest.Nodes))
+		fmt.Println("Distance:", longest.Distance)
 	}
 }
 
