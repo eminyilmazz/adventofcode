@@ -5,10 +5,21 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 )
 
 func main() {
 	fmt.Println(partOne())
+	fmt.Println(partTwo())
+}
+
+func partTwo() int {
+	var total int
+	lines := readInput()
+	for _, line := range lines {
+		total += len(strconv.Quote(line)) - len(line)
+	}
+	return total
 }
 
 func partOne() int {
