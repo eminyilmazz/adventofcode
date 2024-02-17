@@ -15,6 +15,12 @@ const (
 	B = 14
 )
 
+var (
+	minR int
+	minG int
+	minB int
+)
+
 type game struct {
 	r int
 	g int
@@ -23,6 +29,7 @@ type game struct {
 
 func main() {
 	fmt.Println(partOne())
+	fmt.Println(partTwo())
 }
 
 func partOne() int {
@@ -44,6 +51,24 @@ func partOne() int {
 		if possible {
 			val = val + i + 1
 		}
+	}
+	return val
+}
+
+func partTwo() int {
+	var val int
+	inputs := readInput()
+
+	for _, input := range inputs {
+		line := getGames(input)
+		games := strings.Split(line, ";")
+		for _, game := range games {
+			getMinRequired(game)
+		}
+		val = val + (minR * minG * minB)
+		minR = 0
+		minG = 0
+		minB = 0
 	}
 	return val
 }
@@ -78,6 +103,28 @@ func parseColor(cube string) (int, string) {
 		log.Fatal(err)
 	}
 	return count, parts[1]
+}
+
+func getMinRequired(s string) {
+	cubes := strings.Split(s, ",")
+
+	for _, cube := range cubes {
+		count, color := parseColor(cube)
+		switch color {
+		case "red":
+			if minR < count {
+				minR = count
+			}
+		case "green":
+			if minG < count {
+				minG = count
+			}
+		case "blue":
+			if minB < count {
+				minB = count
+			}
+		}
+	}
 }
 
 func readInput() []string {
